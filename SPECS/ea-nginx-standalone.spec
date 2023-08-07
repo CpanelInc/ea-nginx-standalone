@@ -1,7 +1,7 @@
 Name:           ea-nginx-standalone
 Version:        1.0
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4552 for more details
-%define release_prefix 1
+%define release_prefix 2
 Release:        %{release_prefix}%{?dist}.cpanel
 Summary:        Enable standalone config for ea-nginx
 License:        GPL
@@ -10,6 +10,7 @@ URL:            http://www.cpanel.net
 Vendor:         cPanel, Inc.
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Requires:       ea-nginx
+Requires:       ea-nginx-passenger
 
 Source0:        enable.standalone
 
@@ -41,6 +42,9 @@ rm -rf %{buildroot}
 /etc/nginx/ea-nginx/enable.standalone
 
 %changelog
+* Wed Jul 12 2023 Brian Mendoza <brian.mendoza@cpanel.net> - 1.0-2
+- ZC-10396: Add ea-nginx-passenger dependancy
+
 * Mon Dec 21 2020 Daniel Muey <dan@cpanel.net> - 1.0-1
 - ZC-8054: Initial version
 
