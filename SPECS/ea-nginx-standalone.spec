@@ -43,7 +43,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Wed Jul 12 2023 Brian Mendoza <brian.mendoza@cpanel.net> - 1.0-2
-- ZC-10396: Add ea-nginx-passenger dependancy
+- ZC-10396: Add ea-nginx-passenger dependency
 
 * Mon Dec 21 2020 Daniel Muey <dan@cpanel.net> - 1.0-1
 - ZC-8054: Initial version
