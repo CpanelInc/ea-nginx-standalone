@@ -1,7 +1,7 @@
 Name:           ea-nginx-standalone
 Version:        1.0
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4552 for more details
-%define release_prefix 2
+%define release_prefix 3
 Release:        %{release_prefix}%{?dist}.cpanel
 Summary:        Enable standalone config for ea-nginx
 License:        GPL
@@ -34,14 +34,41 @@ install %{SOURCE0} %{buildroot}/etc/nginx/ea-nginx/enable.standalone
 %clean
 rm -rf %{buildroot}
 
+%post
+
+# record the current value of fileprotect
+# if this is a new install
+if [ $1 -eq 1 ]; then
+    if [ -e /var/cpanel/fileprotect ]; then
+        touch /etc/nginx/ea-nginx/meta/fileprotect
+    else
+        rm -f /etc/nginx/ea-nginx/meta/fileprotect
+    fi
+
+    # disable file protect
+    /usr/local/cpanel/bin/whmapi1 set_tweaksetting key=enablefileprotect value=0
+fi
+
 %posttrans
 /usr/local/cpanel/scripts/ea-nginx config --all
+
+%preun
+
+if [ $1 -eq 0 ]; then
+    if [ -e /etc/nginx/ea-nginx/meta/fileprotect ]; then
+        rm -f /etc/nginx/ea-nginx/meta/fileprotect
+        /usr/local/cpanel/bin/whmapi1 set_tweaksetting key=enablefileprotect value=1
+    fi
+fi
 
 %files
 %defattr(0644,root,root,0755)
 /etc/nginx/ea-nginx/enable.standalone
 
 %changelog
+* Mon Oct 02 2023 Travis Holloway <t.holloway@cpanel.net> - 1.0-3
+- EA-11530: Disable file protect when in standalone mode
+
 * Wed Jul 12 2023 Brian Mendoza <brian.mendoza@cpanel.net> - 1.0-2
 - ZC-10396: Add ea-nginx-passenger dependency
 
